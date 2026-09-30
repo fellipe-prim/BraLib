@@ -1,437 +1,280 @@
 # 📚 BraLib
 
-BraLib é uma plataforma para compra e gerenciamento de livros digitais (PDF), desenvolvida como projeto de estudo para Engenharia de Software.
+Sistema de biblioteca digital desenvolvido para gerenciar venda, compra e acesso a livros digitais.
 
-O objetivo do projeto é aplicar conceitos modernos de desenvolvimento Back-end utilizando Java e Spring Boot, simulando um sistema real de e-commerce de livros digitais.
+O objetivo do projeto é aplicar conceitos de desenvolvimento backend, banco de dados, arquitetura de software e integração entre frontend e backend, utilizando tecnologias próximas das utilizadas no mercado.
 
 ---
 
-# 🎯 Objetivos
+# 🚀 Objetivo do Projeto
 
-Este projeto busca praticar:
+O BraLib permite que usuários visualizem livros disponíveis na plataforma, realizem compras simuladas e tenham acesso aos livros adquiridos através de uma biblioteca digital pessoal.
+
+O projeto também possui uma área administrativa para gerenciamento dos livros disponíveis na plataforma.
+
+---
+
+# 🛠️ Tecnologias Utilizadas
+
+## Backend
+- Java
+- Spring Boot
+- Spring Data JPA / Hibernate
+- API REST
+- Maven
+
+## Banco de Dados
+- MySQL
+- Docker
+
+## Frontend
+- React
+- Tailwind CSS
+
+## Ferramentas
+- Git
+- GitHub
+- IntelliJ IDEA
+- Postman
+
+---
+
+# 🏗️ Arquitetura do Projeto
+
+O BraLib será desenvolvido seguindo uma arquitetura em camadas, separando responsabilidades entre interface, regras de negócio e persistência de dados.
+
+Fluxo da aplicação:
+
+```
+Frontend (React + Tailwind)
+            |
+            ↓
+        API REST
+            |
+            ↓
+Backend (Spring Boot + Java)
+            |
+            ↓
+Banco de Dados (MySQL)
+```
+
+## Frontend
+
+Responsável pela interface do usuário, permitindo a navegação pela plataforma, visualização dos livros, gerenciamento da conta e acesso aos livros adquiridos.
+
+Tecnologias utilizadas:
+
+- React
+- Tailwind CSS
+
+---
+
+## Backend
+
+Responsável pelas regras de negócio da aplicação, gerenciamento dos usuários, livros, compras e comunicação com o banco de dados.
+
+Tecnologias utilizadas:
 
 - Java
 - Spring Boot
-- REST API
-- MySQL
-- Docker
-- Git
-- JPA/Hibernate
-- Spring Security
-- JWT
-- Design Patterns
-- SOLID
-- Testes Unitários
-- Documentação com Swagger
+- Spring Data JPA / Hibernate
+- API REST
 
 ---
 
-# 🛠 Tecnologias
+## Banco de Dados
 
-## Back-end
+Responsável pelo armazenamento das informações da aplicação, como usuários cadastrados, livros disponíveis e registros de compras.
 
-- Java 21
-- Spring Boot
-- Spring Security
-- Spring Data JPA
-- Hibernate
-- Maven
-
-## Banco
+Tecnologia utilizada:
 
 - MySQL
 
-## Ferramentas
-
-- Docker
-- Docker Compose
-- Postman
-- IntelliJ IDEA
-- Git
-- GitHub
-
 ---
 
-# 👥 Tipos de usuário
+# 📌 Funcionalidades
 
-## Cliente
+## Usuário
 
-Pode:
-
-- Criar conta
-- Fazer login
-- Comprar livros
-- Visualizar biblioteca
-- Ler PDFs
-- Editar perfil
+- Cadastro e login
+- Visualização de livros disponíveis
+- Compra simulada de livros
+- Visualização dos livros adquiridos
+- Acesso aos PDFs dos livros comprados
 
 ---
 
 ## Administrador
 
-Pode:
-
-- Gerenciar livros
-- Gerenciar autores
-- Gerenciar categorias
-- Gerenciar usuários
-- Fazer upload de PDFs
-- Fazer upload de capas
-- Alterar preços
+- Cadastro de livros
+- Atualização de informações dos livros
+- Remoção/desativação de livros
+- Gerenciamento do catálogo
 
 ---
 
-# 📚 Funcionalidades
+# 🗄️ Modelo do Banco de Dados
 
-## Autenticação
-
-- Cadastro
-- Login
-- JWT
-- Logout (opcional)
+O banco de dados foi desenvolvido utilizando um modelo relacional, separando as principais entidades do sistema e seus relacionamentos.
 
 ---
 
-## Livros
+# 👤 USUARIO
 
-- Listar livros
-- Buscar por título
-- Buscar por autor
-- Buscar por categoria
-- Visualizar detalhes
-- Comprar livro
+A tabela `USUARIO` armazena os dados dos usuários cadastrados no sistema.
 
----
-
-## Biblioteca
-
-- Visualizar livros comprados
-- Abrir PDF
-- Download do PDF
-
----
-
-## Administração
-
-CRUD de:
-
-- Livros
-- Autores
-- Categorias
-
----
-
-# 📂 Estrutura prevista
+Campos principais:
 
 ```
-controller
-service
-repository
-entity
-dto
-mapper
-config
-security
-exception
-util
+id BIGINT PK
+nome VARCHAR(100)
+email VARCHAR(150)
+senha VARCHAR(255)
+data_cadastro DATETIME
+tipo_usuario ENUM
+```
+
+O campo `tipo_usuario` diferencia usuários comuns de administradores.
+
+Um usuário pode possuir vários livros comprados.
+
+---
+
+# 📖 LIVRO
+
+A tabela `LIVRO` representa os livros disponíveis na plataforma.
+
+Campos principais:
+
+```
+id BIGINT PK
+titulo VARCHAR(200)
+autor VARCHAR(150)
+descricao TEXT
+preco DECIMAL(10,2)
+pdf_path VARCHAR(255)
+data_cadastro DATETIME
+ativo BOOLEAN
+```
+
+O campo `pdf_path` armazena o caminho do arquivo PDF que será disponibilizado após a compra.
+
+Um livro pode ser comprado por diversos usuários.
+
+---
+
+# 🛒 LIVROS_COMPRADOS
+
+A tabela `LIVROS_COMPRADOS` representa a relação entre usuários e livros adquiridos.
+
+Ela registra qual usuário comprou qual livro e quando a compra ocorreu.
+
+Campos principais:
+
+```
+id BIGINT PK
+usuario_id BIGINT FK
+livro_id BIGINT FK
+data_compra DATETIME
+```
+
+Exemplo:
+
+```
+Usuário: Fellipe
+Livro: Clean Code
+Data: 30/09/2026
+```
+
+Essa tabela permite que o sistema saiba quais livros cada usuário possui e controle o acesso aos PDFs.
+
+---
+
+# 🔗 Relacionamentos
+
+## USUARIO → LIVROS_COMPRADOS
+
+Um usuário pode comprar vários livros.
+
+```
+USUARIO 1 -------- N LIVROS_COMPRADOS
 ```
 
 ---
 
-# 🗄 Modelo inicial do banco
+## LIVRO → LIVROS_COMPRADOS
 
-Usuario
+Um livro pode ser comprado por vários usuários.
 
-- id
-- nome
-- email
-- senha
-- role
-
-Livro
-
-- id
-- titulo
-- descricao
-- preco
-- pdf
-- capa
-- categoria
-- autor
-
-Autor
-
-- id
-- nome
-
-Categoria
-
-- id
-- nome
-
-Compra
-
-- id
-- usuario
-- livro
-- dataCompra
-- valor
+```
+LIVRO 1 -------- N LIVROS_COMPRADOS
+```
 
 ---
 
-# 📋 Requisitos Funcionais
+# 🔄 Fluxo de Compra
 
-## RF001
-
-O sistema deve permitir cadastro de usuários.
-
----
-
-## RF002
-
-O sistema deve permitir login utilizando e-mail e senha.
-
----
-
-## RF003
-
-O sistema deve listar todos os livros disponíveis.
-
----
-
-## RF004
-
-O sistema deve permitir pesquisar livros.
+```
+Usuário visualiza livros
+          |
+          ↓
+Seleciona um livro
+          |
+          ↓
+Compra simulada
+          |
+          ↓
+Registro criado em LIVROS_COMPRADOS
+          |
+          ↓
+Livro aparece na biblioteca do usuário
+          |
+          ↓
+Usuário acessa o PDF
+```
 
 ---
 
-## RF005
+# 📂 Estrutura prevista do Projeto
 
-O usuário poderá comprar livros.
-
----
-
-## RF006
-
-Após a compra o livro deverá aparecer na biblioteca do usuário.
-
----
-
-## RF007
-
-O administrador poderá cadastrar novos livros.
-
----
-
-## RF008
-
-O administrador poderá editar livros.
-
----
-
-## RF009
-
-O administrador poderá excluir livros.
+```
+BraLib
+│
+├── backend
+│   ├── src/main/java
+│   │   └── com.bralib.backend
+│   │       ├── controller
+│   │       ├── service
+│   │       ├── repository
+│   │       ├── entity
+│   │       └── dto
+│   │
+│   └── pom.xml
+│
+├── frontend
+│   ├── src
+│   └── package.json
+│
+└── README.md
+```
 
 ---
 
-## RF010
+# 📈 Próximos Passos
 
-O administrador poderá cadastrar autores.
-
----
-
-## RF011
-
-O administrador poderá cadastrar categorias.
-
----
-
-## RF012
-
-O administrador poderá enviar um PDF para cada livro.
+- [x] Configuração inicial do Spring Boot
+- [x] Criação do repositório Git
+- [x] Modelagem inicial do banco de dados
+- [ ] Configuração do MySQL com Docker
+- [ ] Criação das entidades JPA
+- [ ] Desenvolvimento das APIs REST
+- [ ] Implementação da autenticação
+- [ ] Desenvolvimento do frontend
+- [ ] Integração completa frontend/backend
+- [ ] Deploy da aplicação
 
 ---
 
-# 🔒 Requisitos Não Funcionais
+# 👨‍💻 Desenvolvedor
 
-- API REST
-- Utilizar JWT
-- Banco MySQL
-- Docker Compose
-- Código seguindo SOLID
-- Utilizar Design Patterns quando aplicável
-- Documentação via Swagger
-- Testes unitários
-
----
-
-# 📖 Histórias de Usuário
-
-## HU001
-
-Como visitante,
-
-quero criar uma conta,
-
-para comprar livros.
-
----
-
-## HU002
-
-Como usuário,
-
-quero fazer login,
-
-para acessar minha biblioteca.
-
----
-
-## HU003
-
-Como usuário,
-
-quero pesquisar livros,
-
-para encontrar um livro específico.
-
----
-
-## HU004
-
-Como usuário,
-
-quero comprar um livro,
-
-para poder lê-lo.
-
----
-
-## HU005
-
-Como usuário,
-
-quero acessar meus livros,
-
-para ler quando desejar.
-
----
-
-## HU006
-
-Como administrador,
-
-quero cadastrar livros,
-
-para disponibilizá-los aos clientes.
-
----
-
-## HU007
-
-Como administrador,
-
-quero editar livros,
-
-para manter as informações atualizadas.
-
----
-
-## HU008
-
-Como administrador,
-
-quero excluir livros,
-
-para remover conteúdos indisponíveis.
-
----
-
-## HU009
-
-Como administrador,
-
-quero cadastrar categorias,
-
-para organizar os livros.
-
----
-
-## HU010
-
-Como administrador,
-
-quero cadastrar autores,
-
-para relacioná-los aos livros.
-
----
-
-# 🚀 Roadmap
-
-## Fase 1
-
-- [ ] Configuração do projeto
-- [ ] MySQL
-- [ ] Docker
-- [ ] Spring Boot
-
----
-
-## Fase 2
-
-- [ ] CRUD Usuários
-- [ ] CRUD Livros
-- [ ] CRUD Categorias
-- [ ] CRUD Autores
-
----
-
-## Fase 3
-
-- [ ] Login
-- [ ] JWT
-- [ ] Spring Security
-
----
-
-## Fase 4
-
-- [ ] Compra de livros
-- [ ] Biblioteca
-- [ ] Download de PDF
-
----
-
-## Fase 5
-
-- [ ] Upload de capa
-- [ ] Upload de PDF
-- [ ] Busca
-- [ ] Paginação
-
----
-
-## Fase 6
-
-- [ ] Testes
-- [ ] Swagger
-- [ ] Logs
-- [ ] Docker Compose
-
----
-
-# 📈 Melhorias futuras
-
-- Favoritos
-- Avaliações
-- Sistema de comentários
-- Lista de desejos
-- Carrinho de compras
-- Cupons de desconto
-- Dashboard administrativo
-- Relatórios de vendas
-- Cache com Redis
-- Deploy na AWS
-- CI/CD com GitHub Actions
+Projeto desenvolvido por Fellipe Prim com objetivo de estudo e construção de portfólio em Engenharia de Software.
