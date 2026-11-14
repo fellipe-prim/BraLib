@@ -1,12 +1,16 @@
+import { Link } from "react-router-dom";
+
 function BookCard({ book }) {
   return (
-    <div className="bookCard">
-      <img src={book.imagem} alt={book.titulo} />
-      <h2>{book.titulo}</h2>
-      <p>{book.autor}</p>
-      <p>{book.descricao}</p>
-      <p>Preço: R$ {book.preco}</p>
-    </div>
+    <Link to={`/livro/${book.id}`}>
+      <div className="bookCard">
+        <h2>{book.titulo}</h2>
+        <p>{book.autor}</p>
+        <p>{book.descricao}</p>
+        <p>Preço: R${book.preco}</p>
+        <img src={book.imagem} alt={book.titulo} />
+      </div>
+    </Link>
   );
 }
 
