@@ -2,21 +2,24 @@ import { useContext } from "react";
 import { CarrinhoContext } from "../context/CarrinhoContext";
 
 function Carrinho() {
-  const { livrosCarrinho } = useContext(CarrinhoContext);
+  const { livrosCarrinho, setLivrosCarrinho } = useContext(CarrinhoContext);
+
+  const removerLivro = (indexRemover) => {
+    setLivrosCarrinho(
+      livrosCarrinho.filter((_, index) => index !== indexRemover),
+    );
+  };
 
   return (
     <main className="min-h-screen bg-[#111111] text-zinc-200">
       <section className="max-w-5xl mx-auto px-6 md:px-12 py-16">
-
         {/* Cabeçalho */}
         <div className="mb-12">
           <p className="text-xs uppercase tracking-[0.3em] text-zinc-500 mb-5">
             BraLib Collection
           </p>
 
-          <h1 className="text-4xl md:text-5xl font-light">
-            Meu Carrinho
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-light">Meu Carrinho</h1>
         </div>
 
         {/* Livros do carrinho */}
@@ -36,23 +39,24 @@ function Carrinho() {
               </div>
 
               {/* Informações */}
-              <div>
+              <div className="flex-1">
                 <h2 className="text-xl font-light text-white mb-3">
                   {livro.titulo}
                 </h2>
 
-                <p className="text-sm text-zinc-500 mb-4">
-                  {livro.autor}
-                </p>
+                <p className="text-sm text-zinc-500 mb-4">{livro.autor}</p>
 
-                <p className="text-lg text-zinc-200">
-                  R$ {livro.preco}
-                </p>
+                <p className="text-lg text-zinc-200">R$ {livro.preco}</p>
               </div>
+              <button
+                onClick={() => removerLivro(index)}
+                className="self-start text-sm text-zinc-500 hover:text-red-400 transition-colors cursor-pointer"
+              >
+                Remover
+              </button>
             </div>
           ))}
         </div>
-
       </section>
     </main>
   );
