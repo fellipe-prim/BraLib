@@ -39,6 +39,13 @@ class LivroController
             throw new InvalidArgumentException("O título é obrigatório");
         }
 
+        // Validação do tamanho do título
+        if (mb_strlen($dados["titulo"]) > 200) {
+            throw new InvalidArgumentException(
+                "O título deve ter no máximo 200 caracteres"
+            );
+        }
+
         // Validação do autor
         $dados["autor"] = trim($dados["autor"] ?? "");
 
@@ -46,14 +53,25 @@ class LivroController
             throw new InvalidArgumentException("O autor é obrigatório");
         }
 
+        // Validação do tamanho do autor
+        if (mb_strlen($dados["autor"]) > 150) {
+            throw new InvalidArgumentException(
+                "O autor deve ter no máximo 150 caracteres"
+            );
+        }
+
         // Validação do preço
         if (
             !isset($dados["preco"]) ||
             !is_numeric($dados["preco"]) ||
-            $dados["preco"] < 0
+            $dados["preco"] < 0 ||
+            $dados["preco"] > 99999999.99 // limite do banco
         ) {
             throw new InvalidArgumentException("Preço inválido");
         }
+
+        // Formatação do preço
+        $dados["preco"] = number_format((float) $dados["preco"], 2, ".", "");
 
         // Validação da descrição (opcional)
         $dados["descricao"] = trim($dados["descricao"] ?? "");
