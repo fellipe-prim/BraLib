@@ -1,0 +1,60 @@
+# Nome do projeto Docker
+name: bralib
+
+# Serviços (containers) da aplicação
+services:
+
+  # ==========================
+  # BANCO DE DADOS - MYSQL
+  # ==========================
+  mysql:
+    image: mysql:8.0                  # Imagem oficial do MySQL 8.0
+    container_name: bralib-mysql      # Nome do container
+    restart: unless-stopped           # Reinicia automaticamente, exceto se parado manualmente
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # Senha definida no .env
+      MYSQL_DATABASE: bralib                       # Banco criado na primeira inicialização
+
+    volumes:
+      - mysql_data:/var/lib/mysql     # Armazena os dados permanentemente
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+    networks:
+      - bralib-network                # Rede de comunicação entre containers
+
+  # ==========================
+  # BACKEND - PHP
+  # ==========================
+  php:
+    build: .                          # Constrói a imagem usando o Dockerfile
+    container_name: bralib-php        # Nome do container
+
+    ports:
+      - "8000:8000"                   # Porta do Windows : porta do container
+
+    volumes:
+      - .:/app                        # Sincroniza a pasta backend com /app
+
+    working_dir: /app                 # Diretório de trabalho dentro do container
+
+    command: php -S 0.0.0.0:8000 -t /app  # Inicia o servidor PHP
+
+    depends_on:
+      - mysql                         # Inicia o MySQL antes do PHP
+
+    networks:
+      - bralib-network                # Permite comunicação com o MySQL
+
+# ==========================
+# ARMAZENAMENTO
+# ==========================
+volumes:
+  mysql_data:                         # Volume persistente do MySQL
+
+# ==========================
+# REDE
+# ==========================
+networks:
+  bralib-network:
+    driver: bridge                    # Rede interna entre os containers
