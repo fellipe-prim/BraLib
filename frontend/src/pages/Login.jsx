@@ -1,4 +1,30 @@
+import { useState } from "react";
+
 function Login() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
+  async function realizarLogin(e) {
+      e.preventDefault();
+
+      const resposta = await fetch("http://localhost:8000/login", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({ email, senha })
+      });
+
+      const dados = await resposta.json();
+
+      if (resposta.ok) {
+          console.log("Login realizado:", dados);
+      } else {
+          console.log("Erro:", dados.erro);
+      }
+  }
+
   return (
     <main className="min-h-screen bg-[#111111] text-zinc-200 flex items-center justify-center px-6">
       <section className="w-full max-w-md py-16">
@@ -14,7 +40,7 @@ function Login() {
           </p>
         </div>
 
-        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-6" onSubmit={realizarLogin}>
           <div>
             <label className="block text-sm text-zinc-400 mb-3">E-mail</label>
 
@@ -22,6 +48,8 @@ function Login() {
               type="email"
               placeholder="seu@email.com"
               className="w-full bg-[#1b1b1b] border border-zinc-800 px-5 py-4 text-white placeholder:text-zinc-600 outline-none focus:border-zinc-500 transition-colors"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -32,6 +60,8 @@ function Login() {
               type="password"
               placeholder="Digite sua senha"
               className="w-full bg-[#1b1b1b] border border-zinc-800 px-5 py-4 text-white placeholder:text-zinc-600 outline-none focus:border-zinc-500 transition-colors"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
             />
           </div>
 
