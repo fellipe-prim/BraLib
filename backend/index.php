@@ -13,12 +13,25 @@ if ($metodo === "POST") {
     $dados = json_decode($json, true);
 
     if (!is_array($dados)) {
-    http_response_code(400);
+        http_response_code(400);
+        echo json_encode(["erro" => "JSON inválido"]);
+        exit;
+    }
 
-    echo json_encode(["erro" => "JSON inválido"]);
-    exit;
-}
-    
+    try {
+        $id = $controller->cadastrar($dados);
+        http_response_code(201);
+
+        echo json_encode([
+            "mensagem" => "Livro cadastrado com sucesso",
+            "id" => $id
+        ]);
+    } catch (InvalidArgumentException $e) {
+        http_response_code(400);
+        echo json_encode(["erro" => $e->getMessage()]);
+        exit;
+    }
+
 } elseif ($metodo === "GET") {
     $id = filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT);
 
@@ -49,5 +62,3 @@ if ($metodo === "POST") {
         echo json_encode($livros, JSON_UNESCAPED_UNICODE);
     }
 }
-
-
