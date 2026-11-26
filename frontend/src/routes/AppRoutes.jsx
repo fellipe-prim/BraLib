@@ -5,6 +5,7 @@ import Catalogo from "../pages/Catalogo";
 import DetalhesLivro from "../pages/DetalhesLivro";
 import Checkout from "../pages/Checkout";
 import Carrinho from "../pages/Carrinho";
+import AdminLivros from "../pages/AdminLivros";
 
 function AppRoutes() {
   return (
@@ -15,6 +16,7 @@ function AppRoutes() {
       <Route path="/livro/:id" element={<DetalhesLivro />} />
       <Route path="/checkout/:id" element={<Checkout />} />
       <Route path="/carrinho" element={<Carrinho />} />
+      <Route path="/admin/livros" element={<AdminLivros />} />
     </Routes>
   );
 }

@@ -23,6 +23,18 @@ $metodo = $_SERVER["REQUEST_METHOD"];
 $rota = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 if ($rota === "/livros" && $metodo === "POST") {
+    if (!isset($_SESSION["usuario"])) { // verifica se existe um usuário na sessão
+        http_response_code(401); // indica que o usuário não está autenticado
+        echo json_encode(["erro" => "Usuário não autenticado"]);
+        exit;
+    }
+
+    if ($_SESSION["usuario"]["nivel_acesso"] !== "ADMIN") {
+        http_response_code(403); // indica que o usuário está autenticado, mas não possui permissão
+        echo json_encode(["erro" => "Acesso negado"]);
+        exit; // interrompe a execução, impedindo o cadastro
+    }
+
     $json = file_get_contents("php://input");
     $dados = json_decode($json, true);
 

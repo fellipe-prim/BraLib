@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const navigate = useNavigate();
 
   async function realizarLogin(e) {
       e.preventDefault();
@@ -19,7 +21,11 @@ function Login() {
       const dados = await resposta.json();
 
       if (resposta.ok) {
-          console.log("Login realizado:", dados);
+          if (dados.nivel_acesso === "ADMIN") {
+              navigate("/admin/livros");
+          } else {
+              navigate("/catalogo");
+          }
       } else {
           console.log("Erro:", dados.erro);
       }
